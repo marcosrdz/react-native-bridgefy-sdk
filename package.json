@@ -1,0 +1,64 @@
+{
+  "_args": [
+    [
+      "../react-native-bridgefy-sdk",
+      "/Users/danno/Desktop/react/ChatSample"
+    ]
+  ],
+  "_from": "../react-native-bridgefy-sdk",
+  "_id": "react-native-bridgefy-sdk@0.0.1",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/react-native-bridgefy-sdk",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": null,
+    "raw": "../react-native-bridgefy-sdk",
+    "rawSpec": "../react-native-bridgefy-sdk",
+    "scope": null,
+    "spec": "/Users/danno/Desktop/react/react-native-bridgefy-sdk",
+    "type": "directory"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../react-native-bridgefy-sdk",
+  "_shasum": "f76189b925a5f644bcfd4040b8e7615e6949e4dc",
+  "_shrinkwrap": null,
+  "_spec": "../react-native-bridgefy-sdk",
+  "_where": "/Users/danno/Desktop/react/ChatSample",
+  "author": {
+    "name": "Gilberto Julian de la Orta Hernandez @kekoyde"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/bridgefy/react-native-bridgefy-sdkissues"
+  },
+  "dependencies": {},
+  "description": "Import Bridgefy React Native modules that can be installed through NPM and easily be used in production.",
+  "devDependencies": {},
+  "gitHead": "921ca9ae365b58f668fb720544f6e93e22aa9b4e",
+  "homepage": "https://bitbucket.org/bridgefy/react-native-bridgefy-sdk",
+  "keywords": [
+    "react-native",
+    "android",
+    "library"
+  ],
+  "license": "Unlicense",
+  "name": "react-native-bridgefy-sdk",
+  "optionalDependencies": {},
+  "peerDependencies": {
+    "react-native": ">= 0.49.3"
+  },
+  "private": false,
+  "readme": "## React Native Android Library Bridgefy\nImport Bridgefy React Native modules that can be installed through NPM and easily be used in production.\n\n## Getting started\n1. Clone the project\n2. Modify/Build the Project in Android Studio\n* Start `Android Studio` and select `File -> New -> Import Project` and select the **android** folder of this package.\n* If you get a `Plugin with id 'android-library' not found` Error, install `android support repository`.\n* If you get asked to upgrade _gradle_ to a new version, you can skip it.\n\n## Installing it as a library in your main project\nThere are many ways to do this, here's the way I do it:\n\n*1. Push it to **Repository**.*\n\n*2. Do `npm install --save npm install --save git+ssh://git@bitbucket.org/bridgefy/react-native-bridgefy-sdk.git` in your main project.*\n\n*3. Link the library:*\n\n * Add the following to `android/settings.gradle`:\n```xml\ninclude ':react-native-bridgefy-sdk'\nproject(':react-native-bridgefy-sdk').projectDir = new File(settingsDir, '../node_modules/react-native-bridgefy-sdk/android'\n```\n * Add the following to `android/app/build.gradle`:\n\n```xml\n repositories {\n             maven {\n                 url \"http://maven.bridgefy.com/artifactory/libs-release-local\"\n                 artifactUrls = [\"http://jcenter.bintray.com/\"]\n             }\n }\n dependencies {\n                compile project(':react-native-bridgefy-sdk')\n}\n```\n\n * Add the following to `android/app/src/main/java/**/MainApplication.java`:\n\n```java\n  package com.your.package;\n  import com.bridgefy.react.sdk.BridgefySdkPackage;  // add this for react-native-bridgefy-sdk\n  public class MainApplication extends Application implements ReactApplication {\n  @Override\n  protected List<ReactPackage> getPackages() {\n            return Arrays.<ReactPackage>asList(\n                  new MainReactPackage(),\n                  new BridgefySdkPackage() // add this for react-native-bridgefy-sdk\n            );\n          }\n  }\n```\n\n*4. Simply `import/require` it by the name defined in your library's `index.android.js`:*\n\n```javascript\n  import Bridgefy from 'react-native-bridgefy-sdk'\n\n  import {\n      ...\n      DeviceEventEmitter,\n    } from 'react-native';\n```\n\n*5. Register Bridgefy*\n\n```javascript\n  Bridgefy.init(\"BRIDGEFY_APY_KEY\", \n    (errorCode, message)=>{\n                console.log(message + \":\" + errorCode);\n                },\n    (client) => {\n                console.log(client);\n                }\n    );\n```\n\n*6. Start Bridgefy SDK*\n\n```javascript\nBridgefySDK.start();\n```\n\n*7. Send messages*\n\n```javascript\n  var message = {\n                 content:{ // Custom content\n                          message:\"Hello world!!\"\n                 },\n                 sender_id: client.UserUuid, // Client id of Bridgefy\n                 receiver_id:device.UserId,  // Client id of Bridgefy to deliver messages\n               };\n // Direct Message\n Bridgefy.sendMessage(message);\n // Broadcast Message\n Bridgefy.sendBroadcastMessage(message);\n```\n\n*8. Message and Device listener*\n\n```javascript\n//\n// BridgefyMessageListener\n//\n DeviceEventEmitter.addListener('onMessageReceived', (message)=> {\n              console.log('onMessageReceived: '+ JSON.stringify(message));\n      }\n);\n DeviceEventEmitter.addListener('onMessageSent', (message)=> {\n             console.log('onMessageSent: '+ JSON.stringify(message));\n      }\n );\n DeviceEventEmitter.addListener('onMessageReceivedException', (error)=> {\n               console.log('onMessageReceivedException: '+ error);\n               console.log('sender: ' + error.sender); // User ID of the sender\n               console.log('code: ' + error.conde); // error code\n               console.log('message' + error.message); // message object empty\n               console.log('description' + error.description); // Error cause\n      }\n );\n DeviceEventEmitter.addListener('onMessageFailed', (error)=> {\n              console.log('onMessageFailed: '+ error);\n              console.log('code: ' + error.conde); // error code\n              console.log('message' + error.message); // message object\n              console.log('description' + error.description); // Error cause\n     }\n );\n DeviceEventEmitter.addListener('onBroadcastMessageReceived', (message)=> {\n             console.log('onBroadcastMessageReceived: '+ JSON.stringify(message));\n     }\n );\n  //\n  // BridgefyStateListener\n  //\n  DeviceEventEmitter.addListener('onStarted', (device)=> {\n             console.log('onStarted: '+ JSON.stringify(device));\n  }\n );\n  DeviceEventEmitter.addListener('onStartError', (error)=> {\n             console.log('onStartError: '+ error);\n             console.log('code: ' + error.conde); // error code\n             console.log('message' + error.message); // message object empty\n             console.log('description' + error.description); // Error cause \n       }\n );\n  DeviceEventEmitter.addListener('onStopped', ()=> {\n             console.log('onStopped');\n       }\n );\n  DeviceEventEmitter.addListener('onDeviceConnected', (device)=> {\n             console.log('onDeviceConnected: ' + JSON.stringify(device));\n      }\n );\n  DeviceEventEmitter.addListener('onDeviceLost', (device)=> {\n             console.log('onDeviceLost: ' + device);\n     }\n );\n```\n\n*9. You can test and develop your library by importing the `node_modules` library into **Android Studio** if you don't want to install it from _git_ all the time.*",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/bridgefy/react-native-bridgefy-sdk.git"
+  },
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "version": "0.0.1"
+}
