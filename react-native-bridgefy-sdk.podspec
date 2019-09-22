@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
     s.source_files  = "ios/*.{h,m}"
     s.public_header_files = "ios/*.h"
     s.dependency "React"
-    s.dependency "bridgefy-ios-developer"
+    s.dependency "BFTransmitter"
   end
